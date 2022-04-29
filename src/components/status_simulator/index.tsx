@@ -4,29 +4,29 @@ import StatusBar from "./StatusBar";
 
 const StatusSimulator: FC = () => {
   const [turnOn, setTurnOn] = useState<boolean>(false);
-  const [isInitializing, setIsInitializing] = useState<boolean>(false);
+  const [isJustTurnOn, setIsJustTurnOn] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [headerContent, setHeaderContent] = useState<string | number>("");
   const [mainContent, setMainContent] = useState<string | number>("");
   const [parameter, setParameter] = useState<string | number>("");
-  const [headerIndex, setHeaderIndex] = useState<number>(-1);
   const [classIndex, setClassIndex] = useState<number>(-1);
   const [itemIndex, setItemIndex] = useState<number>(-1);
-  const [itemsIndex, setItemsIndex] = useState<number[]>([-1, -1, -1, -1, -1]);
-  const [parameters, setParameters] = useState<number[][]>([
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0],
-  ]);
+  const [itemsIndex, setItemsIndex] = useState<number[]>([]);
+  const [isShowSymbol, setISShowSymbol] = useState<boolean>(false);
+  const [isClass, setIsClass] = useState<boolean>(true);
+  const [parameters, setParameters] = useState<number[][]>([]);
 
   useEffect(() => {
+    initialization();
+  }, []);
+
+  useEffect(() => {
+    setIsJustTurnOn(true);
     if (turnOn) {
-      setIsInitializing(true);
-      setMainContent(".");
+      setIsLoading(true);
+      setMainContent("888888888");
       setTimeout(() => {
-        setIsInitializing(false);
-        setMainContent("SIMULATOR STARTED");
+        setIsLoading(false);
       }, 2000);
     } else {
       initialization();
@@ -34,85 +34,117 @@ const StatusSimulator: FC = () => {
   }, [turnOn]);
 
   useEffect(() => {
-    if (classIndex < 0) return;
-    setMainContent(tempData.class[classIndex]);
-  }, [classIndex]);
-
-  useEffect(() => {
-    if (classIndex < 0) return;
-    setMainContent(tempData.items[classIndex][itemIndex]);
-  }, [itemsIndex]);
-
-  useEffect(() => {
-    setHeaderContent(tempData.header[headerIndex]);
-  }, [headerIndex]);
+    checkAndHandleClassAndItem(true);
+  }, [isClass])
 
   const initialization = () => {
     let indexs: number[] = new Array(tempData.class.length).fill(-1);
-    let params: number[][] = new Array(tempData.class.length).fill(
-      new Array(3).fill(0)
-    );
-    setIsInitializing(false);
+    setIsLoading(false);
     setHeaderContent("");
     setMainContent("");
     setParameter("");
-    setHeaderIndex(-1);
     setClassIndex(-1);
     setItemIndex(-1);
     setItemsIndex(indexs);
+    let params: number[][] = [];
+    tempData.items.map(data => {
+      params.push(new Array(data.length).fill(0));
+    })
     setParameters(params);
+    setISShowSymbol(false);
   };
 
   const handlePower = () => {
     setTurnOn(!turnOn);
   };
 
-  const handleClass = () => {
-    if (isInitializing) return;
-    let index = classIndex + 1;
-    if (index >= tempData.class.length) {
-      index = 0;
+  const checkCircleIndicator = (param: number) => {
+    if(param === tempData.circleIndicator[classIndex][itemIndex]) {
+      setISShowSymbol(true);
     }
+    else {
+      setISShowSymbol(false);
+    }
+  }
+
+  const handleClass = (isAdd: boolean) => {
+    if (isLoading) return;
+    let index = classIndex;
+    if(isAdd) {
+      index ++;
+      if (index >= tempData.class.length) {
+        index = 0;
+      }
+    }
+    setMainContent(tempData.class[index]);
     setParameter("");
+    setISShowSymbol(false);
     setClassIndex(index);
   };
 
-  const handleItem = () => {
-    if (isInitializing) return;
+  const handleItem = (isAdd: boolean) => {
+    if (isLoading) return;
     if (classIndex < 0) return;
+    if (!tempData.items[classIndex].length) return;
     let indexs = [...itemsIndex];
-    indexs[classIndex]++;
-    if (indexs[classIndex] >= tempData.items[classIndex].length) {
-      indexs[classIndex] = 0;
+    if(isAdd) {
+      indexs[classIndex]++;
+      if (indexs[classIndex] >= tempData.items[classIndex].length) {
+        indexs[classIndex] = 0;
+      }
     }
-    setParameter("");
+    setMainContent(tempData.items[classIndex][indexs[classIndex]]);
+    setParameter(parameters[classIndex][indexs[classIndex]]);
+    checkCircleIndicator(parameters[classIndex][indexs[classIndex]]);
     setItemIndex(indexs[classIndex]);
     setItemsIndex(indexs);
   };
 
-  const showParameter = () => {
-    if (!turnOn || isInitializing) return;
-    setParameter(parameters[classIndex][itemIndex]);
-  };
+  const checkAndHandleClassAndItem = (isAdd: boolean) => {
+    if(!turnOn || isLoading) return;
+    if(isJustTurnOn) {
+      setIsLoading(true);
+      setMainContent("-E")
+      setTimeout(() => {
+        setIsJustTurnOn(false);
+        setIsLoading(false);
+        handleClassAndItem(isAdd);
+      }, 2000)
+    }
+    else {
+      handleClassAndItem(isAdd);
+    }
+  }
+
+  const handleClassAndItem = (isAdd: boolean) => {
+    if(!turnOn || isLoading) return;
+    if(isClass) handleClass(isAdd);
+    else handleItem(isAdd);
+  }
 
   const handleParameter = () => {
-    if (parameter === "") return;
-    let params = [...parameters];
-    params[classIndex][itemIndex]++;
-    if (params[classIndex][itemIndex] >= 10) {
-      params[classIndex][itemIndex] = 0;
+    if (typeof parameter === "string") return;
+    let params = parameter + 1;
+    if (params > tempData.parameters[classIndex][itemIndex]) {
+      params = 0;
     }
-    setParameter(params[classIndex][itemIndex]);
+    checkCircleIndicator(params);
+    setParameter(params);
+  };
+
+  const saveCurrentState = () => {
+    let params = JSON.parse(JSON.stringify(parameters));
+    params[classIndex][itemIndex] = parameter;
     setParameters(params);
-  };
-  const handleHeader = () => {
-    if (!turnOn || isInitializing) return;
-    let index = headerIndex + 1;
-    if (index >= tempData.header.length) {
-      index = 0;
+  }
+
+  const changeClassAndItem = (isSave: boolean) => {
+    if(isClass && !tempData.items[classIndex].length) return;
+    if(!isClass && isSave) {
+      saveCurrentState();
     }
-    setHeaderIndex(index);
-  };
+    setIsClass(!isClass);
+  }
 
   return (
     <div className="mx_StatusSimulator">
@@ -124,43 +156,44 @@ const StatusSimulator: FC = () => {
           headerContent={headerContent}
           mainContent={mainContent}
           parameter={parameter}
+          isShowSymbol={isShowSymbol}
         />
         <div className="mx_StatusSimulator_controlTools">
           <button
-            className="mx_StatusSimulator_controlTools_button danger"
+            className="mx_StatusSimulator_controlTools_button"
             onClick={handlePower}
           >
             ON/OFF
           </button>
           <button
             className="mx_StatusSimulator_controlTools_button"
-            onClick={handleItem}
+            onClick={() => changeClassAndItem(false)}
+          >
+            CAL
+          </button>
+          <button
+            className="mx_StatusSimulator_controlTools_button"
+            onClick={() => checkAndHandleClassAndItem(true)}
           >
             MODE
           </button>
           <button
             className="mx_StatusSimulator_controlTools_button"
-            onClick={handleClass}
+            onClick={() => checkAndHandleClassAndItem(true)}
           >
             SAMPLE
           </button>
           <button
             className="mx_StatusSimulator_controlTools_button"
-            onClick={showParameter}
+            onClick={() => changeClassAndItem(true)}
           >
             PRINT
           </button>
           <button
-            className="mx_StatusSimulator_controlTools_button"
+            className="mx_StatusSimulator_controlTools_button danger"
             onClick={handleParameter}
           >
             RE-ZERO
-          </button>
-          <button
-            className="mx_StatusSimulator_controlTools_button"
-            onClick={handleHeader}
-          >
-            CAL
           </button>
         </div>
       </div>
