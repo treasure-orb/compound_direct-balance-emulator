@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
-import { tempData } from "../../@types/value";
+import { classes } from "../../@types/value";
 import StatusBar from "./StatusBar";
 
 const StatusSimulator: FC = () => {
@@ -37,8 +37,17 @@ const StatusSimulator: FC = () => {
     checkAndHandleClassAndItem(true);
   }, [isClass])
 
+  useEffect(() => {
+    if(!isClass) {
+      checkCircleIndicator()
+      if(typeof parameter === "number") {
+        setHeaderContent(classes[classIndex].items[itemIndex].conditions[parameter].name);
+      }
+    }
+  }, [itemIndex, parameter]);
+
   const initialization = () => {
-    let indexs: number[] = new Array(tempData.class.length).fill(-1);
+    let indexs: number[] = new Array(classes.length).fill(-1);
     setIsLoading(false);
     setHeaderContent("");
     setMainContent("");
@@ -47,8 +56,8 @@ const StatusSimulator: FC = () => {
     setItemIndex(-1);
     setItemsIndex(indexs);
     let params: number[][] = [];
-    tempData.items.map(data => {
-      params.push(new Array(data.length).fill(0));
+    classes.map(data => {
+      params.push(new Array(data.items.length).fill(0));
     })
     setParameters(params);
     setISShowSymbol(false);
@@ -58,13 +67,16 @@ const StatusSimulator: FC = () => {
     setTurnOn(!turnOn);
   };
 
-  const checkCircleIndicator = (param: number) => {
-    if(param === tempData.circleIndicator[classIndex][itemIndex]) {
-      setISShowSymbol(true);
-    }
-    else {
+  const checkCircleIndicator = () => {
+    if(typeof parameter === "string") {
       setISShowSymbol(false);
+      return;
     }
+    if(classes[classIndex].items[itemIndex].conditions[parameter].circleIndicator) {
+      setISShowSymbol(true);
+      return;
+    }
+    setISShowSymbol(false);
   }
 
   const handleClass = (isAdd: boolean) => {
@@ -72,12 +84,13 @@ const StatusSimulator: FC = () => {
     let index = classIndex;
     if(isAdd) {
       index ++;
-      if (index >= tempData.class.length) {
+      if (index >= classes.length) {
         index = 0;
       }
     }
-    setMainContent(tempData.class[index]);
+    setMainContent(classes[index].name);
     setParameter("");
+    setHeaderContent("");
     setISShowSymbol(false);
     setClassIndex(index);
   };
@@ -85,17 +98,16 @@ const StatusSimulator: FC = () => {
   const handleItem = (isAdd: boolean) => {
     if (isLoading) return;
     if (classIndex < 0) return;
-    if (!tempData.items[classIndex].length) return;
+    if (!classes[classIndex].items.length) return;
     let indexs = [...itemsIndex];
     if(isAdd) {
       indexs[classIndex]++;
-      if (indexs[classIndex] >= tempData.items[classIndex].length) {
+      if (indexs[classIndex] >= classes[classIndex].items.length) {
         indexs[classIndex] = 0;
       }
     }
-    setMainContent(tempData.items[classIndex][indexs[classIndex]]);
+    setMainContent(classes[classIndex].items[indexs[classIndex]].name);
     setParameter(parameters[classIndex][indexs[classIndex]]);
-    checkCircleIndicator(parameters[classIndex][indexs[classIndex]]);
     setItemIndex(indexs[classIndex]);
     setItemsIndex(indexs);
   };
@@ -125,10 +137,9 @@ const StatusSimulator: FC = () => {
   const handleParameter = () => {
     if (typeof parameter === "string") return;
     let params = parameter + 1;
-    if (params > tempData.parameters[classIndex][itemIndex]) {
+    if (params >= classes[classIndex].items[itemIndex].conditions.length) {
       params = 0;
     }
-    checkCircleIndicator(params);
     setParameter(params);
   };
 
@@ -139,7 +150,7 @@ const StatusSimulator: FC = () => {
   }
 
   const changeClassAndItem = (isSave: boolean) => {
-    if(isClass && !tempData.items[classIndex].length) return;
+    if(isClass && !classes[classIndex].items.length) return;
     if(!isClass && isSave) {
       saveCurrentState();
     }
