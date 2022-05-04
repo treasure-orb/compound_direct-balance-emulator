@@ -8,7 +8,7 @@ export const classes = [
         desciption: "Condition",
         conditions: [
           { name: "FAST", description: "Fast response, sensitive value" },
-          { name: "MID", description: "Medium response", circleIndicator: true},
+          { name: "MID", description: "Medium response", default: true},
           { name: "SLOW", description: "Slow response, stable value" },
         ],
       },
@@ -17,7 +17,7 @@ export const classes = [
         desciption: "Stability band width",
         conditions: [
           { name: "Stable Range is ±1" },
-          { name: "Stable Range is ±2", circleIndicator: true },
+          { name: "Stable Range is ±2", default: true },
           { name: "Stable Range is ±3" },
         ],
       },
@@ -25,7 +25,7 @@ export const classes = [
         name: "HoLd",
         description: "Hold function",
         conditions: [
-          { name: "OFF", circleIndicator: true }, 
+          { name: "OFF", default: true }, 
           { name: "ON" }
         ],
       },
@@ -34,7 +34,7 @@ export const classes = [
         description: "Zero tracking",
         conditions: [
           { name: "OFF" },
-          { name: "Normal", circleIndicator: true },
+          { name: "Normal", default: true },
           { name: "Strong" },
           { name: "Very Strong" },
         ],
@@ -43,7 +43,7 @@ export const classes = [
         name: "SPd", 
         description: "Display refresh rate",
         conditions: [
-          { name: "5 times/second", circleIndicator: true },
+          { name: "5 times/second", default: true },
           { name: "10 times/second" },
           { name: "20 times/second" }
         ] 
@@ -52,7 +52,7 @@ export const classes = [
         name: "Pnt", 
         description: "Decimal point",
         conditions: [
-          { name: "Point(.)", circleIndicator: true },
+          { name: "Point(.)", default: true },
           { name: "Comma(,)" }
         ] 
       },
@@ -60,7 +60,7 @@ export const classes = [
         name: "P-on", 
         description: "Auto display-ON",
         conditions: [
-          { name: "OFF", circleIndicator: true },
+          { name: "OFF", default: true },
           { name: "ON" }
         ] 
       },
@@ -68,7 +68,7 @@ export const classes = [
         name: "PoFF", 
         description: "Auto display-OFF",
         conditions: [
-          { name: "OFF", circleIndicator: true },
+          { name: "OFF", default: true },
           { name: "ON (10 minutes)" }
         ] 
       },
@@ -76,7 +76,7 @@ export const classes = [
         name: "rnC", 
         description: "Display at start",
         conditions: [
-          { name: "Displays", circleIndicator: true },
+          { name: "Displays", default: true },
           { name: "Does not display" }
         ] 
       },
@@ -85,7 +85,7 @@ export const classes = [
         description: "Beep",
         conditions: [
           { name: "Does not sounds" },
-          { name: "Sounds", circleIndicator: true }
+          { name: "Sounds", default: true }
         ] 
       },
     ],
@@ -104,7 +104,7 @@ export const classes = [
         name: "CP",
         desciption: "Comparator mode",
         conditions: [
-          { name: "", description: "No comparison", circleIndicator: true },
+          { name: "", description: "No comparison", default: true },
           { name: "", description: "Comparison, excluding 'near zero' when stable value oroverloaded" },
           { name: "", description: "Comparison, including 'near zero' when stable value oroverloaded" },
           { name: "", description: "Continuous comparison, excluding 'near zero'" },
@@ -115,7 +115,7 @@ export const classes = [
         name: "bEP_",
         desciption: "LO buzzer",
         conditions: [
-          { name: "OFF",  circleIndicator: true },
+          { name: "OFF",  default: true },
           { name: "ON" },
         ],
       },
@@ -123,7 +123,7 @@ export const classes = [
         name: "bEP-",
         desciption: "OK buzzer",
         conditions: [
-          { name: "OFF",  circleIndicator: true },
+          { name: "OFF",  default: true },
           { name: "ON" },
         ],
       },
@@ -131,7 +131,7 @@ export const classes = [
         name: "bep`",
         desciption: "HI buzzer",
         conditions: [
-          { name: "OFF",  circleIndicator: true },
+          { name: "OFF",  default: true },
           { name: "ON" },
         ],
       },
@@ -157,7 +157,7 @@ export const classes = [
         name: "Prt",
         desciption: "Data output mode",
         conditions: [
-          { name: "Key mode", circleIndicator: true },
+          { name: "Key mode", default: true },
           { name: "Auto print mode A", description: "(Reference = zero)" },
           { name: "Auto print mode B", description: "(Reference = last stable value)" },
           { name: "Stream mode"},
@@ -170,7 +170,7 @@ export const classes = [
         name: "AP-P",
         desciption: "Auto print polarity",
         conditions: [
-          { name: "Plus only", circleIndicator: true },
+          { name: "Plus only", default: true },
           { name: "Minus only" },
           { name: "Both" },
         ],
@@ -179,7 +179,7 @@ export const classes = [
         name: "AP-b",
         description: "Auto print difference",
         conditions: [
-          { name: "10 digits", circleIndicator: true }, 
+          { name: "10 digits", default: true }, 
           { name: "100 digits" }, 
           { name: "1000 digits" }, 
         ],
@@ -189,7 +189,7 @@ export const classes = [
         description: "Interval time",
         conditions: [
           { name: "Every measurement" },
-          { name: "2 seconds", circleIndicator: true },
+          { name: "2 seconds", default: true },
           { name: "5 seconds" },
           { name: "10 seconds" },
           { name: "30 seconds" },
@@ -203,7 +203,7 @@ export const classes = [
         name: "S-,d", 
         description: "ID number output",
         conditions: [
-          { name: "No output ", circleIndicator: true },
+          { name: "No output ", default: true },
           { name: "Output" },
         ] 
       },
@@ -211,7 +211,7 @@ export const classes = [
         name: "S-td", 
         description: "Time/Date output",
         conditions: [
-          { name: "No output ", circleIndicator: true },
+          { name: "No output ", default: true },
           { name: "Time only" },
           { name: "Date only" },
           { name: "Time and date" },
@@ -221,7 +221,7 @@ export const classes = [
         name: "PUSE", 
         description: "Data output pause",
         conditions: [
-          { name: "No pause", circleIndicator: true },
+          { name: "No pause", default: true },
           { name: "Pause", description: "1.6 seconds" }
         ] 
       },
@@ -229,7 +229,7 @@ export const classes = [
         name: "At-F", 
         description: "Auto feed",
         conditions: [
-          { name: "Not used", circleIndicator: true },
+          { name: "Not used", default: true },
           { name: "Used" }
         ] 
       },
@@ -237,7 +237,7 @@ export const classes = [
         name: ",nFo", 
         description: "GLP output",
         conditions: [
-          { name: "No output", circleIndicator: true },
+          { name: "No output", default: true },
           { name: "AD-8121 format" },
           { name: "General data format", description: "output time and date usingthe built-in clock" },
           { name: "General data format", description: "(output time and date using the clock of the external equipmen" }
@@ -247,7 +247,7 @@ export const classes = [
         name: "Ar-d", 
         description: "Zero after output",
         conditions: [
-          { name: "Not used", circleIndicator: true },
+          { name: "Not used", default: true },
           { name: "Used" }
         ] 
       },
@@ -263,7 +263,7 @@ export const classes = [
         conditions: [
           { name: "600 bps", },
           { name: "1200 bps", },
-          { name: "2400 bps", circleIndicator: true },
+          { name: "2400 bps", default: true },
           { name: "4800 bps", },
           { name: "9600 bps", },
           { name: "19200 bps", },
@@ -273,7 +273,7 @@ export const classes = [
         name: "btPr",
         desciption: "Data bit, parity bit",
         conditions: [
-          { name: "7 bits, even", circleIndicator: true },
+          { name: "7 bits, even", default: true },
           { name: "7 bits, odd" },
           { name: "8 bits, none" },
         ],
@@ -282,7 +282,7 @@ export const classes = [
         name: "CrLF",
         description: "Terminator",
         conditions: [
-          { name: "CR LF", circleIndicator: true }, 
+          { name: "CR LF", default: true }, 
           { name: "CR" }, 
         ],
       },
@@ -290,7 +290,7 @@ export const classes = [
         name: "tYPE",
         description: "Data format",
         conditions: [
-          { name: "A&D standard format", circleIndicator: true },
+          { name: "A&D standard format", default: true },
           { name: " DP format" },
           { name: " KF format" },
           { name: " MT format" },
@@ -303,14 +303,14 @@ export const classes = [
         description: "Timeout",
         conditions: [
           { name: "No limit" },
-          { name: "1 second", circleIndicator: true },
+          { name: "1 second", default: true },
         ] 
       },
       { 
         name: "ErCd", 
         description: "AK, Error code",
         conditions: [
-          { name: "No output ", circleIndicator: true },
+          { name: "No output ", default: true },
           { name: "Output" },
         ] 
       },
@@ -342,7 +342,7 @@ export const classes = [
         name: "APF",
         desciption: "Application function",
         conditions: [
-          { name: "Normal weighing mode", circleIndicator: true },
+          { name: "Normal weighing mode", default: true },
           { name: "Capacity indicator" },
           { name: "Statistical calculation mode" },
         ],
@@ -351,7 +351,7 @@ export const classes = [
         name: "StAF",
         desciption: "Statistical function mode output items",
         conditions: [
-          { name: "", description: "Number of data, sum", circleIndicator: true },
+          { name: "", description: "Number of data, sum", default: true },
           { name: "", description: "Number of data, sum, maximum, minimum, average, range (maximum-minimum)" },
           { name: "", description: "Number of data, sum, maximum, minimum, average, range (maximum-minimum), standard deviation, coefficient of variation" },
           { name: "", description: "Number of data, sum, maximum, minimum, average, range (maximum-minimum), standard deviation, coefficient of variation, relative error " },
@@ -365,7 +365,7 @@ export const classes = [
       {
         name: "PASS",
         conditions: [
-          { name: "OFF", circleIndicator: true },
+          { name: "OFF", default: true },
           { name: "ON", description: "limits weighing operations" },
           { name: "ON", description: "enables basic weighing" },
         ],
@@ -373,7 +373,7 @@ export const classes = [
       {
         name: "Loc no",
         conditions: [
-          { name: "", description: "Administrator password input" },
+          { name: "", description: "Administrator password input", default: true},
           { name: "", description: "User 1 password input" },
         ],
       },

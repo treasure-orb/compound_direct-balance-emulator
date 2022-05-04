@@ -34,7 +34,7 @@ const StatusSimulator: FC = () => {
   }, [turnOn]);
 
   useEffect(() => {
-    checkAndHandleClassAndItem(true);
+    checkAndHandleClassAndItem(true, true);
   }, [isClass])
 
   useEffect(() => {
@@ -57,8 +57,16 @@ const StatusSimulator: FC = () => {
     setItemsIndex(indexs);
     let params: number[][] = [];
     classes.map(data => {
-      params.push(new Array(data.items.length).fill(0));
+      let arr: number[] = [];
+      data.items.map((item) => {
+        let defaultIndex = item.conditions.findIndex((condition) => !!condition.default);
+        if(defaultIndex !== -1) {
+          arr.push(defaultIndex);
+        }
+      })
+      params.push(arr);
     })
+    console.log(params);
     setParameters(params);
     setISShowSymbol(false);
   };
@@ -72,7 +80,7 @@ const StatusSimulator: FC = () => {
       setISShowSymbol(false);
       return;
     }
-    if(classes[classIndex].items[itemIndex].conditions[parameter].circleIndicator) {
+    if(parameter === parameters[classIndex][itemIndex]) {
       setISShowSymbol(true);
       return;
     }
@@ -95,7 +103,7 @@ const StatusSimulator: FC = () => {
     setClassIndex(index);
   };
 
-  const handleItem = (isAdd: boolean) => {
+  const handleItem = (isAdd: boolean, isFirstItem: boolean) => {
     if (isLoading) return;
     if (classIndex < 0) return;
     if (!classes[classIndex].items.length) return;
@@ -106,13 +114,16 @@ const StatusSimulator: FC = () => {
         indexs[classIndex] = 0;
       }
     }
+    if(isFirstItem) {
+      indexs[classIndex] = 0;
+    }
     setMainContent(classes[classIndex].items[indexs[classIndex]].name);
     setParameter(parameters[classIndex][indexs[classIndex]]);
     setItemIndex(indexs[classIndex]);
     setItemsIndex(indexs);
   };
 
-  const checkAndHandleClassAndItem = (isAdd: boolean) => {
+  const checkAndHandleClassAndItem = (isAdd: boolean, isFirstItem: boolean) => {
     if(!turnOn || isLoading) return;
     if(isJustTurnOn) {
       setIsLoading(true);
@@ -120,18 +131,18 @@ const StatusSimulator: FC = () => {
       setTimeout(() => {
         setIsJustTurnOn(false);
         setIsLoading(false);
-        handleClassAndItem(isAdd);
+        handleClassAndItem(isAdd, isFirstItem);
       }, 2000)
     }
     else {
-      handleClassAndItem(isAdd);
+      handleClassAndItem(isAdd, isFirstItem);
     }
   }
 
-  const handleClassAndItem = (isAdd: boolean) => {
+  const handleClassAndItem = (isAdd: boolean, isFirstItem: boolean) => {
     if(!turnOn || isLoading) return;
     if(isClass) handleClass(isAdd);
-    else handleItem(isAdd);
+    else handleItem(isAdd, isFirstItem);
   }
 
   const handleParameter = () => {
@@ -184,13 +195,13 @@ const StatusSimulator: FC = () => {
           </button>
           <button
             className="mx_StatusSimulator_controlTools_button"
-            onClick={() => checkAndHandleClassAndItem(true)}
+            onClick={() => checkAndHandleClassAndItem(true, false)}
           >
             MODE
           </button>
           <button
             className="mx_StatusSimulator_controlTools_button"
-            onClick={() => checkAndHandleClassAndItem(true)}
+            onClick={() => checkAndHandleClassAndItem(true, false)}
           >
             SAMPLE
           </button>
